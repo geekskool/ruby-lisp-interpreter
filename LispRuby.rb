@@ -13,116 +13,93 @@
 
 class LispRuby
 
-	def initialize
+    def initialize
 
-		@environment = {
+        @environment = {
 
-		:+     => lambda{|*list| list.inject{|sum,x| sum + x }},
-      		:==    => lambda{|x, y| x == y},
-      		:!=    => lambda{|x, y| x != y},
-      		:<     => lambda{|x, y| x < y},
-      		:<=    => lambda{|x, y| x <= y},
-      		:>     => lambda{|x, y| x > y},
-      		:>=    => lambda{|x, y| x >= y},
-      		:*     => lambda{|*list| list.inject(1){|prod, x| prod * x}},
-      		:/     => lambda{|x, y| x / y},
-      		:-     => lambda{|x, y| x - y},
+	    :+     => lambda{|*list| list.inject{|sum,x| sum + x }},
+      	    :==    => lambda{|x, y| x == y},
+      	    :!=    => lambda{|x, y| x != y},
+      	    :<     => lambda{|x, y| x < y},
+      	    :<=    => lambda{|x, y| x <= y},
+      	    :>     => lambda{|x, y| x > y},
+      	    :>=    => lambda{|x, y| x >= y},
+      	    :*     => lambda{|*list| list.inject(1){|prod, x| prod * x}},
+      	    :/     => lambda{|x, y| x / y},
+      	    :-     => lambda{|x, y| x - y},
 
-      		:list  => lambda{|*list| Array(list)},
-      		:eq?   => lambda{|x, y| x == y},
-      		:min   => lambda{|list| list.min},
-      		:max   => lambda{|list| list.max},
-      		:sqrt  => lambda{|x| Math.sqrt(x)},
-      		:pow   => lambda{|x, y| x**y},
+      	    :list  => lambda{|*list| Array(list)},
+      	    :eq?   => lambda{|x, y| x == y},
+      	    :min   => lambda{|list| list.min},
+      	    :max   => lambda{|list| list.max},
+      	    :sqrt  => lambda{|x| Math.sqrt(x)},
+      	    :pow   => lambda{|x, y| x**y},
           	
-          	:car   => lambda{|list|},
-          	:cdr   => lambda{|list|},
-          	:cons  => lambda{|list|},
-		}
+            :car   => lambda{|list|},
+            :cdr   => lambda{|list|},
+            :cons  => lambda{|list|},
+	}
 
-	end
+    end
 
 	################# USER INPUT ##################
 
-	def ask_continous_input_from_user
-
-		while true
-      
-      	print "LispRuby >> "
-      	lisp_command = gets.chomp
-
-      	break if lisp_command.downcase == "exit"
-      	
-      	puts run_the lisp_command
-
+    def ask_continous_input_from_user
+        while true
+      	    print "LispRuby >> "
+      	    lisp_command = gets.chomp
+      	    break if lisp_command.downcase == "exit"
+      	    puts run_the lisp_command
     	end
-  	end 	
+    end 	
 
-  	################# PARSING STARTS ##################
+  	################# PARSING STARTS ################
 
-	def run_the lisp
+    def run_the lisp
+        eval syntax_tree_with splitting_the lisp
+    end
 
-		  eval syntax_tree_with splitting_the lisp
-	end
+    def splitting_the input_from_user
+        raise SyntaxError, "Empty input" if input_from_user.empty?
+	input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
+    end
 
-	def splitting_the input_from_user
-
-		raise SyntaxError, "Empty input" if input_from_user.empty?
-
-		input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
-
-	end
-
-	def syntax_tree_with tokens
-
-		token = tokens.shift
-    	
-    	if '(' == token 
-      	list = []
-      		
-      		while tokens.first != ')'
-        	list << syntax_tree_with(tokens)
-     		end
-
-      	tokens.shift
-      	list
-   		
-   		elsif ')' == token
-      		raise 'Wrong Syntax'
-    	
+    def syntax_tree_with tokens
+        token = tokens.shift
+        if '(' == token 
+      	    list = []
+      	        while tokens.first != ')'
+                    list << syntax_tree_with(tokens)
+     	        end
+      	    tokens.shift
+      	    list
+   	elsif ')' == token
+      	    raise 'Wrong Syntax'
     	else
-      		check_if_splitted_items_are(token)
+      	    check_if_splitted_items_are(token)
     	end   	
+    end
 
-	end
-
-	def check_if_splitted_items_are num_or_char
-
-		if num_or_char[/\.\d+/]
-      		num_or_char.to_f
-    	
+    def check_if_splitted_items_are num_or_char
+        if num_or_char[/\.\d+/]
+      	    num_or_char.to_f
     	elsif num_or_char[/\d+/]
-      		num_or_char.to_i
-    	
+      	    num_or_char.to_i
     	else
-      		num_or_char.to_sym
+            num_or_char.to_sym
     	end
-
-	end
+    end
 
 	################# PARSING COMPLETED ##################
 
 	################# EVALUATION STARTS ##################
 
-	def eval (exp, env = @environment)
-
-		if exp.is_a? Numeric
-      exp
-    	
-    elsif exp.is_a? Symbol
-      env[exp]
-    	
-    elsif exp.first == :quote
+    def eval (exp, env = @environment)
+        if exp.is_a? Numeric
+            exp
+        elsif exp.is_a? Symbol
+            env[exp]
+        elsif exp.first == :quote
       		exp[1..-1]
     	
     elsif exp.first == :if
