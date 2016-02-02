@@ -34,9 +34,10 @@ class LispRuby
       		:max   => lambda{|list| list.max},
       		:sqrt  => lambda{|x| Math.sqrt(x)},
       		:pow   => lambda{|x, y| x**y},
-          :car   => lambda{|list|},
-          :cdr   => lambda{|list|},
-          :cons  => lambda{|list|},
+          	
+          	:car   => lambda{|list|},
+          	:cdr   => lambda{|list|},
+          	:cons  => lambda{|list|},
 		}
 
 	end
