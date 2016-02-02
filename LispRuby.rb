@@ -17,7 +17,7 @@ class LispRuby
 
         @environment = {
 
-	          :+     => lambda{|*list| list.inject{|sum,x| sum + x }},
+            :+     => lambda{|*list| list.inject{|sum,x| sum + x }},
       	    :==    => lambda{|x, y| x == y},
       	    :!=    => lambda{|x, y| x != y},
       	    :<     => lambda{|x, y| x < y},
