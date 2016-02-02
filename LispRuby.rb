@@ -17,7 +17,7 @@ class LispRuby
 
         @environment = {
 
-	    :+     => lambda{|*list| list.inject{|sum,x| sum + x }},
+	          :+     => lambda{|*list| list.inject{|sum,x| sum + x }},
       	    :==    => lambda{|x, y| x == y},
       	    :!=    => lambda{|x, y| x != y},
       	    :<     => lambda{|x, y| x < y},
@@ -38,7 +38,7 @@ class LispRuby
             :car   => lambda{|list|},
             :cdr   => lambda{|list|},
             :cons  => lambda{|list|},
-	}
+	      }
 
     end
 
@@ -50,9 +50,9 @@ class LispRuby
       	    lisp_command = gets.chomp
       	    break if lisp_command.downcase == "exit"
       	    puts run_the lisp_command
-    	end
+    	  end
     end 	
-
+ 
     ################# PARSING STARTS ################
 
     def run_the lisp
@@ -61,7 +61,7 @@ class LispRuby
 
     def splitting_the input_from_user
         raise SyntaxError, "Empty input" if input_from_user.empty?
-	input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
+	      input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
     end
 
     def syntax_tree_with tokens
@@ -73,21 +73,21 @@ class LispRuby
      	        end
       	    tokens.shift
       	    list
-   	elsif ')' == token
+   	    elsif ')' == token
       	    raise 'Wrong Syntax'
-    	else
+    	  else
       	    check_if_splitted_items_are(token)
-    	end   	
+    	  end   	
     end
 
     def check_if_splitted_items_are num_or_char
         if num_or_char[/\.\d+/]
       	    num_or_char.to_f
-    	elsif num_or_char[/\d+/]
+        elsif num_or_char[/\d+/]
       	    num_or_char.to_i
-    	else
+    	  else
             num_or_char.to_sym
-    	end
+    	  end
     end
     
     ################# PARSING COMPLETED ##################
@@ -121,17 +121,16 @@ class LispRuby
 
     def car_cdr_cons(expression)
         start = expression.first
-    	case start
-    	    when :car
-	    puts expression.flatten[2].inspect
+        case start
+    	      when :car
+	          puts expression.flatten[2].inspect
 	    
-	    when :cdr
-	    puts expression.flatten[3..-1].inspect
+	          when :cdr
+	          puts expression.flatten[3..-1].inspect
 
-	    when :cons		
-	    puts (expression.flatten[3..-1] << expression.flatten[1]).inspect		
-        end    
-    
+	          when :cons		
+	          puts (expression.flatten[3..-1] << expression.flatten[1]).inspect		
+        end        
     end
 end
 
@@ -141,4 +140,3 @@ end
 
 new_instance_to = LispRuby.new
 new_instance_to.ask_continous_input_from_user
-
