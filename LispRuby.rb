@@ -42,7 +42,7 @@ class LispRuby
 
     end
 
-	################# USER INPUT ##################
+    ################# USER INPUT ##################
 
     def ask_continous_input_from_user
         while true
@@ -53,7 +53,7 @@ class LispRuby
     	end
     end 	
 
-  	################# PARSING STARTS ################
+    ################# PARSING STARTS ################
 
     def run_the lisp
         eval syntax_tree_with splitting_the lisp
@@ -89,10 +89,10 @@ class LispRuby
             num_or_char.to_sym
     	end
     end
+    
+    ################# PARSING COMPLETED ##################
 
-	################# PARSING COMPLETED ##################
-
-	################# EVALUATION STARTS ##################
+    ################# EVALUATION STARTS ##################
 
     def eval (exp, env = @environment)
         if exp.is_a? Numeric
@@ -100,58 +100,44 @@ class LispRuby
         elsif exp.is_a? Symbol
             env[exp]
         elsif exp.first == :quote
-      		exp[1..-1]
-    	
-    elsif exp.first == :if
-
-      _, condition, yes, no = exp
-      exp = eval(condition, env) ? yes : no
-      eval(exp, env)
-    	
-    elsif exp.first == :define
-
-      _, var, e = exp
-      env[var] = eval(e, env)
-    
-    elsif exp.first == :lambda
-
-      _, params, e = exp
-      lambda { |*args| eval(e, env.merge(Hash[params.zip(args)])) }
-    	
-    else    		  
-      
-      car_cdr_cons(exp) if exp.first == :car || :cdr || :cons
-      proc = eval(exp[0], env)
-      args = exp[1..-1].map{ |arg| eval(arg, env) }
-      proc.(*args)
-    
+      	    exp[1..-1]
+        elsif exp.first == :if
+            _, condition, yes, no = exp
+            exp = eval(condition, env) ? yes : no
+            eval(exp, env)
+        elsif exp.first == :define
+            _, var, e = exp
+            env[var] = eval(e, env)
+        elsif exp.first == :lambda
+            _, params, e = exp
+            lambda { |*args| eval(e, env.merge(Hash[params.zip(args)])) }
+        else    		  
+            car_cdr_cons(exp) if exp.first == :car || :cdr || :cons
+            proc = eval(exp[0], env)
+            args = exp[1..-1].map{ |arg| eval(arg, env) }
+            proc.(*args)
+        end
     end
 
-  end
-
     def car_cdr_cons(expression)
-
-   		start = expression.first
-
+        start = expression.first
     	case start
-		
-			when :car
-			puts expression.flatten[2].inspect
+    	    when :car
+	    puts expression.flatten[2].inspect
+	    
+	    when :cdr
+	    puts expression.flatten[3..-1].inspect
 
-			when :cdr
-			puts expression.flatten[3..-1].inspect
-
-			when :cons		
-			puts (expression.flatten[3..-1] << expression.flatten[1]).inspect
-		  
-      end    
+	    when :cons		
+	    puts (expression.flatten[3..-1] << expression.flatten[1]).inspect		
+        end    
     
     end
 end
 
-	################# EVALUATION COMPLETED ##############
+    ################# EVALUATION COMPLETED ##############
 
-	################# INVOKING PROGRAM ##################
+    ################# INVOKING PROGRAM ##################
 
 new_instance_to = LispRuby.new
 new_instance_to.ask_continous_input_from_user
