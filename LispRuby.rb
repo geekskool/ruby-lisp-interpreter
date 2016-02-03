@@ -68,9 +68,9 @@ class LispRuby
         token = tokens.shift
         if '(' == token 
       	    list = []
-      	        while tokens.first != ')'
-                    list << make_syntax(tokens)
-     	        end
+      	    while tokens.first != ')'
+            list << make_syntax(tokens)
+     	      end
       	    tokens.shift
       	    list
    	    elsif ')' == token
