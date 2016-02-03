@@ -37,56 +37,56 @@ class LispRuby
           	
             :car   => lambda{|list|},
             :cdr   => lambda{|list|},
-            :cons  => lambda{|list|},
+            :cons  => lambda{|e, list|},
 	      }
 
     end
 
     ################# USER INPUT ##################
 
-    def ask_continous_input_from_user
+    def user_input
         while true
       	    print "LispRuby >> "
       	    lisp_command = gets.chomp
       	    break if lisp_command.downcase == "exit"
-      	    puts run_the lisp_command
+      	    puts run_the(lisp_command).inspect
     	  end
     end 	
  
     ################# PARSING STARTS ################
 
     def run_the lisp
-        eval syntax_tree_with splitting_the lisp
+        eval make_syntax seperate lisp
     end
 
-    def splitting_the input_from_user
+    def seperate input_from_user
         raise SyntaxError, "Empty input" if input_from_user.empty?
-	      input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
+        input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
     end
 
-    def syntax_tree_with tokens
+    def make_syntax tokens
         token = tokens.shift
         if '(' == token 
       	    list = []
       	        while tokens.first != ')'
-                    list << syntax_tree_with(tokens)
+                    list << make_syntax(tokens)
      	        end
       	    tokens.shift
       	    list
    	    elsif ')' == token
       	    raise 'Wrong Syntax'
     	  else
-      	    check_if_splitted_items_are(token)
+      	    check token
     	  end   	
     end
 
-    def check_if_splitted_items_are num_or_char
-        if num_or_char[/\.\d+/]
-      	    num_or_char.to_f
-        elsif num_or_char[/\d+/]
-      	    num_or_char.to_i
+    def check token
+        if token[/\.\d+/]
+      	    token.to_f
+        elsif token[/\d+/]
+      	    token.to_i
     	  else
-            num_or_char.to_sym
+            token.to_sym
     	  end
     end
     
@@ -138,5 +138,5 @@ end
 
     ################# INVOKING PROGRAM ##################
 
-new_instance_to = LispRuby.new
-new_instance_to.ask_continous_input_from_user
+invoke = LispRuby.new
+invoke.user_input
