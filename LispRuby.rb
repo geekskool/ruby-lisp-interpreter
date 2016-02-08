@@ -49,7 +49,8 @@ class LispRuby
       	    print "LispRuby >> "
       	    lisp_command = gets.chomp
       	    break if lisp_command.downcase == "exit"
-      	    puts run_the(lisp_command).inspect
+            result = run_the lisp_command
+      	    puts (result.inspect) unless result.nil?
     	  end
     end 	
  
@@ -61,6 +62,7 @@ class LispRuby
 
     def seperate input_from_user
         raise SyntaxError, "Empty input" if input_from_user.empty?
+        raise SyntaxError, "Unexpected ')' or '(" if ((input_from_user.count '(') != (input_from_user.count ')'))
         input_from_user.gsub('(', ' ( ').gsub(')', ' ) ').split(" ")
     end
 
